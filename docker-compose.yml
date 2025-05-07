@@ -1,0 +1,45 @@
+version: '3.9'
+
+services:
+  # — WordPress
+  wordpress:
+    image: ${WP_IMAGE:-automattic/wordpress-xdebug}
+    ports:
+      - "${WP_PORT}:80"
+    depends_on:
+      - mysql
+    volumes:
+      - "${PROJECT_DIR}/wordpress:/var/www/html"
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST: mysql
+      WORDPRESS_DB_USER: ${DB_USER}
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
+      WORDPRESS_DB_NAME: ${DB_NAME}
+
+  # — Base de données
+  mysql:
+    image: ${DB_IMAGE:-mysql:8}
+    volumes:
+      - "${PROJECT_DIR}/db:/var/lib/mysql"
+    restart: always
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+
+  # — PhpMyAdmin
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    depends_on:
+      - mysql
+    ports:
+      - "${PMA_PORT}:80"
+    restart: always
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_ARBITRARY: '1'
+
+# pas de volumes nommés « static » ici : on monte directement des dossiers hôtes
