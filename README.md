@@ -12,11 +12,11 @@ mon-wp-template/
 ├── .env
 └── data/               # Contiendra automatiquement les dossiers par projet
     ├── mon_wp1/
-    │   ├── db/         # Données MySQL
-    │   └── wordpress/  # Fichiers WordPress (code + uploads)
+    │   ├── db_data/         # Données MySQL
+    │   └── wordpress_data/  # Fichiers WordPress (code + uploads)
     └── mon_wp2/        # Exemple pour deuxième instance
-        ├── db/
-        └── wordpress/
+        ├── db_data/
+        └── wordpress_data/
 ```
 
 ---
@@ -77,7 +77,7 @@ services:
   mysql:
     image: ${DB_IMAGE}
     volumes:
-      - db_data:/var/lib/mysql
+      - ${PROJECT_DIR}/db_data:/var/lib/mysql
     restart: always
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
@@ -92,7 +92,7 @@ services:
     ports:
       - "${WP_PORT}:80"
     volumes:
-      - wordpress_data:/var/www/html
+      - ${PROJECT_DIR}/wordpress_data:/var/www/html
     restart: always
     environment:
       WORDPRESS_DB_HOST: mysql
@@ -115,6 +115,7 @@ services:
 volumes:
   db_data: {}
   wordpress_data: {}
+
 ```
 
 > Ici, Docker Compose **préfixe** les volumes (`db_data` → `mon_wp1_db_data`) grâce à `COMPOSE_PROJECT_NAME`.
@@ -128,7 +129,7 @@ volumes:
 3. Dans ton terminal :
 
    ```bash
-   docker-compose up -d
+   docker-compose up --build -d
    ```
 4. Accède à WordPress sur `http://localhost:WP_PORT` (ex. [http://localhost:8010](http://localhost:8010)) et phpMyAdmin sur `http://localhost:PMA_PORT`.
 
