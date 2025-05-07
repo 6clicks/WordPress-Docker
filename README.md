@@ -150,61 +150,18 @@ volumes:
 
 ---
 
-## ⚙️ Customisation avancée
-
-* **Bind mount vers disque réseau (Windows U:)**
-
-  * Autoriser le partage de `U:` dans Docker Desktop > Resources > File Sharing
-  * Exemple dans `docker-compose.yml` :
-
-    ```yaml
-    wordpress:
-      volumes:
-        - "U:/mes_wp/mon_wp1:/var/www/html"
-    ```
-* **Ajouter Xdebug, Redis, un reverse-proxy…**
-
-  * Surcharge `WP_IMAGE` dans `.env` ou étends le service
-  * Exemple :
-
-    ```yaml
-    wordpress:
-      image: my-custom-wp:latest
-      build: ./docker/wp-custom
-      # …
-    ```
-* **Réseau personnalisé**
-
-  ```yaml
-  networks:
-    wp-net:
-      driver: bridge
-
-  services:
-    mysql:
-      networks: [wp-net]
-    wordpress:
-      networks: [wp-net]
-    phpmyadmin:
-      networks: [wp-net]
-  ```
-
----
-
 ## ❓ FAQ rapide
 
 * **Pourquoi `db_data` ?**
   Pour **persister** ta BDD au-delà du conteneur. Sans volume, tu perds tout à chaque `down`/`up`.
 * **Comment lancer 5 WP en même temps ?**
   Duplique simplement ton dossier, ajuste `.env` (ports + répertoire), puis `docker-compose up -d` dans chacun.
-* **Performance lente sur réseau ?**
-  Les bind mounts CIFS/SMB sont plus lents : ok en dev, à proscrire en prod ou tests lourds.
 
 ---
 
 ## 📖 Licence & Crédits
 
-MIT © \[Ton Entreprise] – Template inspiré par [automattic/wordpress-docker](https://github.com/automattic/wordpress-docker) et ta dose de café ☕
+MIT © \6clicks – Template inspiré par [automattic/wordpress-docker](https://github.com/automattic/wordpress-docker) et ta dose de café ☕
 
 ---
 
